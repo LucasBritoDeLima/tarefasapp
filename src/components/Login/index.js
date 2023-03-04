@@ -1,5 +1,7 @@
 import React, { useState } from 'react';
-import { View, Text, StyleSheet, SafeAreaView, TextInput, TouchableOpacity, Alert } from 'react-native';
+import { View, Text, StyleSheet, SafeAreaView, TextInput, TouchableOpacity } from 'react-native';
+
+import firebase from '../../services/firebaseConnection';
 
 export default function Login() {
   const [type, setType] = useState('login');
@@ -8,7 +10,29 @@ export default function Login() {
   const [password, setPassword] = useState('');
 
   function handleLogin(){
-    alert('TESTE')
+    if(type === 'login'){
+      // Aqui fazemos o login
+      const user = firebase.auth().signInWithEmailAndPassword(email, password)
+      .then((user) => {
+        console.log(user.user)
+      })
+      .catch((err) => {
+        console.log(err);
+        alert('Ops parece que deu algum erro.');
+        return;
+      })
+    }else {
+      // Aqui cadastramos o usuário
+      const user = firebase.auth().createUserWithEmailAndPassword(email, password)
+      .then((user) => {
+        console.log(user.user)
+      })
+      .catch((err) => {
+        console.log(err);
+        alert('Ops parece que algo está errado!');
+        return;
+      })
+    }
   }
 
   return (
