@@ -3,7 +3,7 @@ import { View, Text, StyleSheet, SafeAreaView, TextInput, TouchableOpacity } fro
 
 import firebase from '../../services/firebaseConnection';
 
-export default function Login() {
+export default function Login({ changeStatus }) {
   const [type, setType] = useState('login');
 
   const [email, setEmail] = useState('');
@@ -14,7 +14,7 @@ export default function Login() {
       // Aqui fazemos o login
       const user = firebase.auth().signInWithEmailAndPassword(email, password)
       .then((user) => {
-        console.log(user.user)
+        changeStatus(user.user.uid)
       })
       .catch((err) => {
         console.log(err);
@@ -25,7 +25,7 @@ export default function Login() {
       // Aqui cadastramos o usuário
       const user = firebase.auth().createUserWithEmailAndPassword(email, password)
       .then((user) => {
-        console.log(user.user)
+        changeStatus(user.user.uid)
       })
       .catch((err) => {
         console.log(err);
