@@ -21,10 +21,17 @@ export default function App() {
   const [user, setUser] = useState(null);
   const [newTask, setNewTask] = useState('');
 
+  function handleDelete(key){
+    console.log(key);
+  }
 
-    if(!user){
-        return <Login changeStatus={ (user) => setUser(user) } />
-    }
+  function handleEdit(data){
+    console.log("ITEM CLICADO", data)
+  }
+
+  if(!user){
+    return <Login changeStatus={ (user) => setUser(user) } />
+  }
 
   return (
     <SafeAreaView style={styles.container}>
@@ -44,7 +51,7 @@ export default function App() {
         data={tasks}
         keyExtractor={ item => item.key }
         renderItem={ ({ item }) => (
-          <TaskList data={item}/>
+          <TaskList data={item} deleteItem={handleDelete} editItem={handleEdit} />
         ) }
       />
     </SafeAreaView>
