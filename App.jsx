@@ -6,20 +6,45 @@ import {
   SafeAreaView, 
   TextInput, 
   TouchableOpacity, 
-  FlatList
+  FlatList,
+  Keyboard
 } from 'react-native';
 
 import Login from './src/components/Login';
 import TaskList from './src/components/TaskList';
 
-let tasks = [
-  {key: '1', nome: 'Comprar Coca-Cola'},
-  {key: '2', nome: 'Estudar javascript'},
-]
+import firebase from './src/services/firebaseConnection';
+
 
 export default function App() {
   const [user, setUser] = useState(null);
+  const [tasks, setTasks] = useState([]);
   const [newTask, setNewTask] = useState('');
+
+  function handleAdd(){
+    if(newTask === ''){
+      return;
+    }
+
+    let tarefas = firebase.database().ref('tarefas').child(user);
+    let chave = tarefas.push().key;
+
+    tarefas.child(chave).set({
+      nome: newTask
+    })
+    .then( () => {
+      const data = {
+        key: chave,
+        nome: newTask
+      };
+
+      setTasks(oldTasks => [...oldTasks, data])
+    })
+
+    Keyboard.dismiss();
+    setNewTask('');
+
+  }
 
   function handleDelete(key){
     console.log(key);
@@ -42,7 +67,7 @@ export default function App() {
           value={newTask}
           onChangeText={ (text) => setNewTask(text) }
         />
-        <TouchableOpacity style={styles.buttonAdd}>
+        <TouchableOpacity style={styles.buttonAdd} onPress={handleAdd}>
           <Text style={styles.buttonText}>+</Text>
         </TouchableOpacity>
       </View>
